@@ -7,6 +7,7 @@ import rutasAgente from './routes/agente.routers.js';
 import rutasContratos from './routes/contratos.routes.js';
 import rutasModelos from './routes/modelo.routers.js';
 import rutasFacturas from './routes/factura.routers.js';
+import routerservicios from './routes/servicio_at.routes.js';
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use('/api', rutasAgente);
 app.use('/api', rutasContratos);
 app.use('/api', rutasModelos);
 app.use('/api', rutasFacturas);
+app.use('/api', routerservicios);
 
 
 // Manejo de rutas no encontradas

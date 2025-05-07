@@ -1,12 +1,17 @@
 import { Router } from 'express';
-import { obtenerContratos, obtenerContrato } from '../controllers/contratos.controller.js';
+import { obtenerContratosConDetalles, registrarContratos, eliminarContrato, actualizarContrato } from '../controllers/contratos.controller.js';
 
 const router = Router();
 
-// Ruta para obtener todos los contratos
-router.get('/Contrato', obtenerContratos);
+// Ruta para obtener los contratos con detalles
+router.get('/contratos', obtenerContratosConDetalles);
 
-// Ruta para obtener un contrato por su ID
-router.get('/Contrato/:id', obtenerContrato);
 
+router.post('/registrarcontrato', registrarContratos);
+
+// Ruta para eliminar un cliente por su ID
+router.delete('/eliminarcontrato/:id', eliminarContrato);
+
+// Ruta para actualizar un cliente por su ID
+router.patch('/actualizarcontrato/:id', actualizarContrato);
 export default router;
