@@ -13,19 +13,49 @@ export const obtenerModelos = async (req, res) => {
   }
 };
 
+// Obtener un modelo por su ID
+export const obtenerModelo = async (req, res) => {
+  try {
+    const [result] = await pool.query('SELECT * FROM Modelo WHERE IDModelo = ?', [req.params.id]);
+    
+    if (result.length <= 0) {
+      return res.status(404).json({
+        mensaje: `Error al leer los datos. El ID ${req.params.id} del modelo no fue encontrado.`
+      });
+    }
+    res.json(result[0]);
+  } catch (error) {
+    return res.status(500).json({
+      mensaje: 'Ha ocurrido un error al leer los datos del modelo.'
+    });
+  }
+};
+
 // Registrar un nuevo modelo
 export const registrarModelo = async (req, res) => {
   try {
-    const { Nombre, Modelo, Medida, Color } = req.body;
-    
+    const { Nombre, Modelo, Medida, Color, imagen } = req.body;
+
+    // Validación básica de campos requeridos
+    if (!Nombre || !Modelo || !Medida || !Color ||!imagen) {
+      return res.status(400).json({
+        mensaje: 'Faltan campos requeridos: Nombre, Modelo, Medida o Color.'
+      });
+    }
+
     const [result] = await pool.query(
       'INSERT INTO Modelo (Nombre, Modelo, Medida, Color) VALUES (?, ?, ?, ?)',
-      [Nombre, Modelo, Medida, Color]
+      [Nombre, Modelo, Medida, Color, imagen]
     );
-    res.status(201).json({ IDModelo: result.insertId });
+
+    res.status(201).json({ 
+      IDModelo: result.insertId,
+      mensaje: 'Modelo registrado exitosamente'
+    });
   } catch (error) {
     return res.status(500).json({
-      mensaje: 'Ha ocurrido un error al registrar el modelo.'
+      mensaje: 'Ha ocurrido un error al registrar el modelo.',
+      error: error.message
     });
   }
 };
@@ -71,7 +101,7 @@ export const actualizarModelo = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       mensaje: 'Error al actualizar el modelo.',
-      error: error
+      error: error,
     });
   }
 };
