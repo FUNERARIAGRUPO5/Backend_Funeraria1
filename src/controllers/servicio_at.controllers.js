@@ -7,7 +7,7 @@ export const obtenerServicios = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       mensaje: 'Ha ocurrido un error al leer los datos de los servicios.',
-      error: error
+      error: error.message
     });
   }
 };
@@ -37,7 +37,7 @@ export const registrarServicio = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       mensaje: 'Ha ocurrido un error al registrar el servicio.',
-      error: error
+      error: error.message
     });
   }
 };
@@ -56,7 +56,7 @@ export const eliminarServicio = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       mensaje: 'Ha ocurrido un error al eliminar el servicio.',
-      error: error
+      error: error.message
     });
   }
 };
@@ -64,11 +64,22 @@ export const eliminarServicio = async (req, res) => {
 export const actualizarServicio = async (req, res) => {
   try {
     const { id } = req.params;
-    const datos = req.body;
+    const { Nombre, Codigo_de_Modelo, monto, IDModelo, ID_Contrato } = req.body;
+
+    // Validación estricta de datos
+    if (!Nombre || !Codigo_de_Modelo || monto === undefined || !IDModelo || !ID_Contrato) {
+      return res.status(400).json({ mensaje: 'Faltan campos obligatorios.' });
+    }
+    if (typeof Nombre !== 'string' || typeof Codigo_de_Modelo !== 'string' ||
+        typeof monto !== 'number' || typeof IDModelo !== 'number' || typeof ID_Contrato !== 'number') {
+      return res.status(400).json({ mensaje: 'Formato de datos inválido.' });
+    }
+
+    console.log('Datos recibidos para actualizar (ID:', id, '):', { Nombre, Codigo_de_Modelo, monto, IDModelo, ID_Contrato });
 
     const [resultado] = await pool.query(
-      'UPDATE servicio_at SET ? WHERE ID_Servicio = ?',
-      [datos, id]
+      'UPDATE servicio_at SET Nombre = ?, Codigo_de_Modelo = ?, monto = ?, IDModelo = ?, ID_Contrato = ? WHERE ID_Servicio = ?',
+      [Nombre, Codigo_de_Modelo, monto, IDModelo, ID_Contrato, id]
     );
 
     if (resultado.affectedRows === 0) {
@@ -79,9 +90,11 @@ export const actualizarServicio = async (req, res) => {
 
     res.status(204).send();
   } catch (error) {
+    console.error('Error detallado al actualizar servicio (ID:', req.params.id, '):', error);
     return res.status(500).json({
       mensaje: 'Error al actualizar el servicio.',
-      error: error
+      error: error.message,
+      stack: error.stack // Para más detalles en desarrollo
     });
   }
 };

@@ -26,7 +26,8 @@ export const obtenerModelo = async (req, res) => {
     res.json(result[0]);
   } catch (error) {
     return res.status(500).json({
-      mensaje: 'Ha ocurrido un error al leer los datos del modelo.'
+      mensaje: 'Ha ocurrido un error al leer los datos del modelo.',
+      error: error
     });
   }
 };
@@ -37,25 +38,25 @@ export const registrarModelo = async (req, res) => {
     const { Nombre, Modelo, Medida, Color, imagen } = req.body;
 
     // Validación básica de campos requeridos
-    if (!Nombre || !Modelo || !Medida || !Color ||!imagen) {
+    if (!Nombre || !Modelo || !Medida || !Color) {
       return res.status(400).json({
         mensaje: 'Faltan campos requeridos: Nombre, Modelo, Medida o Color.'
       });
     }
 
     const [result] = await pool.query(
-      'INSERT INTO Modelo (Nombre, Modelo, Medida, Color) VALUES (?, ?, ?, ?)',
-      [Nombre, Modelo, Medida, Color, imagen]
+      'INSERT INTO Modelo (Nombre, Modelo, Medida, Color, imagen) VALUES (?, ?, ?, ?, ?)',
+      [Nombre, Modelo, Medida, Color, imagen || null]
     );
 
     res.status(201).json({ 
-      IDModelo: result.insertId,
+      id_modelo: result.insertId,
       mensaje: 'Modelo registrado exitosamente'
     });
   } catch (error) {
     return res.status(500).json({
       mensaje: 'Ha ocurrido un error al registrar el modelo.',
-      error: error.message
+      error: error
     });
   }
 };
@@ -79,7 +80,6 @@ export const eliminarModelo = async (req, res) => {
     });
   }
 };
-
 // Actualizar un modelo por su ID (parcial o completa)
 export const actualizarModelo = async (req, res) => {
   try {
@@ -101,7 +101,8 @@ export const actualizarModelo = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       mensaje: 'Error al actualizar el modelo.',
-      error: error,
+      error: error.message
     });
   }
 };
+// Actualizar un modelo por su ID (parcial o completa

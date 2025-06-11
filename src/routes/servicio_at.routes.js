@@ -6,7 +6,7 @@ const router = Router();
 // Ruta para obtener todos los servicios
 router.get('/servicios', obtenerServicios);
 
-// Ruta para registrar un nuevo servicio
+// Ruta para registrar un nuevo servicio (corregida para coincidir con el frontend)
 router.post('/registrarservicio', registrarServicio);
 
 // Ruta para eliminar un servicio por su ID

@@ -3,7 +3,23 @@ import { pool } from '../db.js';
 // Obtener todas las facturas
 export const obtenerFacturas = async (req, res) => {
   try {
-    const [rows] = await pool.query('SELECT * FROM factura');
+    const [rows] = await pool.query(`
+      SELECT 
+        f.IDFactura,
+        f.IDAgente_co,
+        f.IDContrato,
+        f.Monto_DEC AS 'Montopagado',
+        f.Cuotas AS 'Cuotaspagadas',
+        CONCAT(c.Nombre, ' ', c.Apellido) AS NombreCliente,
+        a.Nombre AS NombreAgente,
+        co.Cuotas,
+        co.Monto
+      FROM 
+        factura f
+        INNER JOIN contrato co ON f.IDContrato = co.IDContrato
+        INNER JOIN cliente c ON co.IDCliente = c.IDCliente
+        INNER JOIN agente_co a ON f.IDAgente_co = a.IDAgente_co
+    `);
 
     if (rows.length === 0) {
       return res.status(404).json({ mensaje: 'No se encontraron facturas.' });

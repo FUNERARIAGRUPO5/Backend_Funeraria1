@@ -3,17 +3,16 @@ import { obtenerModelos, registrarModelo, eliminarModelo, actualizarModelo } fro
 
 const router = Router();
 
-// Ruta para obtener todos los Modelos
+// Ruta para obtener todos los modelos
 router.get('/modelos', obtenerModelos);
 
-// Ruta para obtener un modelo por su ID
-router.post('/registrarmodelos', registrarModelo);
+// Ruta para registrar un nuevo modelo
+router.post('/modelos', registrarModelo);
 
-// Ruta para eliminar un cliente por su ID
+// Ruta para eliminar un modelo por su ID
 router.delete('/eliminarmodelos/:id', eliminarModelo);
 
-// Ruta para actualizar un cliente por su ID
-router.patch('/actualizarmodelos/:id', actualizarModelo);
-
+// Ruta para actualizar un modelo por su ID
+router.patch('/actualizarModelo/:id', actualizarModelo);
 
 export default router;
